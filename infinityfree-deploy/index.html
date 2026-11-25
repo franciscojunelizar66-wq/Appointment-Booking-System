@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book an Appointment</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="card">
+    <h1>Book an Appointment</h1>
+    <p class="sub">Mon–Fri, 9:00 AM – 5:00 PM</p>
+    <div id="msg" class="msg" hidden></div>
+
+    <form id="form" novalidate>
+      <label>Full Name<input type="text" name="name" required maxlength="100"></label>
+      <label>Email<input type="email" name="email" required></label>
+      <label>Phone<input type="tel" name="phone" required placeholder="+63 912 345 6789"></label>
+      <label>Service
+        <select name="service" required id="service"></select>
+      </label>
+      <label>Date<input type="date" name="date" id="date" required></label>
+
+      <div>
+        <span class="lbl">Available Times</span>
+        <div id="slots" class="slots"><em>Select a date first</em></div>
+        <input type="hidden" name="time" id="time">
+      </div>
+
+      <label>Notes (optional)<textarea name="notes" rows="3" maxlength="255"></textarea></label>
+      <button type="submit" id="btn">Book Appointment</button>
+    </form>
+    <p class="nav"><a href="bookings.html">View all bookings</a></p>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

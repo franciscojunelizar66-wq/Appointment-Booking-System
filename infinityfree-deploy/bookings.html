@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>All Bookings</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="card wide">
+    <div class="top"><h1>All Bookings</h1><a href="index.html">+ Book an appointment</a></div>
+    <div class="filters">
+      <input id="search" placeholder="Search name, service, date...">
+      <select id="status">
+        <option value="">All statuses</option>
+        <option>pending</option><option>confirmed</option><option>cancelled</option>
+      </select>
+    </div>
+    <p id="count" class="sub"></p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Ref #</th><th>Name</th><th>Service</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="6">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+  <script>
+    let all = [];
+    const rowsEl = document.getElementById('rows');
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const fmt = t => { const [h, m] = t.split(':'); return `${h % 12 || 12}:${m} ${h >= 12 ? 'PM' : 'AM'}`; };
+
+    function render() {
+      const q = document.getElementById('search').value.toLowerCase();
+      const st = document.getElementById('status').value;
+      const list = all.filter(r =>
+        (!st || r.status === st) &&
+        (!q || [r.id, r.name, r.service, r.appt_date].join(' ').toLowerCase().includes(q)));
+      document.getElementById('count').textContent = `${list.length} of ${all.length} booking(s)`;
+      rowsEl.innerHTML = list.length ? list.map(r => `
+        <tr><td>#${r.id}</td><td>${esc(r.name)}</td><td>${esc(r.service)}</td>
+        <td>${esc(r.appt_date)}</td><td>${fmt(r.appt_time)}</td>
+        <td><span class="badge ${esc(r.status)}">${esc(r.status)}</span></td></tr>`).join('')
+        : '<tr><td colspan="6">No bookings found.</td></tr>';
+    }
+
+    fetch('api/list.php').then(r => r.json()).then(d => { all = d; render(); })
+      .catch(() => rowsEl.innerHTML = '<tr><td colspan="6">Could not load bookings.</td></tr>');
+    document.getElementById('search').addEventListener('input', render);
+    document.getElementById('status').addEventListener('change', render);
+  </script>
+</body>
+</html>
