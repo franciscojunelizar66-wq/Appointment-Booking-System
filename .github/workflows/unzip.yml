@@ -1,0 +1,32 @@
+name: Unzip project
+
+on:
+  workflow_dispatch:        # lets you run it manually from the Actions tab
+  push:
+    paths:
+      - 'infinityfree-deploy.zip'
+
+permissions:
+  contents: write
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Unzip into the repo
+        run: |
+          unzip -o infinityfree-deploy.zip -d .
+
+      - name: Remove the zip file
+        run: rm -f infinityfree-deploy.zip
+
+      - name: Commit extracted files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Unzip project files" || echo "Nothing to commit"
+          git push
